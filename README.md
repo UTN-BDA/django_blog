@@ -24,9 +24,8 @@ A simple and elegant blogging platform built with Django. This application allow
 
 ```bash
 cd django_blog
-uv venv
+uv sync
 source .venv/bin/activate
-uv pip install -r requirements.txt
 ```
 
 3. Apply migrations:
