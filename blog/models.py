@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-# Create your models here.
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
