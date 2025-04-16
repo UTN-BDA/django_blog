@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ author.user.get_full_name|default:author.user.username }} | Django Blog{% endblock %}
+
+{% block header_title %}{{ author.user.get_full_name|default:author.user.username }}{% endblock %}
+{% block header_subtitle %}Author Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        {% if author.profile_picture %}
+                            <img src="{{ author.profile_picture.url }}" class="rounded-circle img-fluid mb-3" alt="{{ author.user.username }}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <h2>{{ author.user.get_full_name|default:author.user.username }}</h2>
+                        <p class="text-muted">{{ author.user.email }}</p>
+                        
+                        {% if author.bio %}
+                            <h4 class="mt-3">About</h4>
+                            <p>{{ author.bio }}</p>
+                        {% endif %}
+                        
+                        {% if author.website %}
+                            <p><a href="{{ author.website }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">Visit Website</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mb-4">Posts by {{ author.user.get_full_name|default:author.user.username }}</h3>
+        
+        {% if posts %}
+            {% for post in posts %}
+                <div class="card mb-4">
+                    {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h4 class="card-title">{{ post.title }}</h4>
+                        <p class="card-text text-muted">
+                            <small>{{ post.published_date|date:"F d, Y" }}</small>
+                        </p>
+                        <p class="card-text">{{ post.excerpt|default:post.content|truncatewords:30 }}</p>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                This author hasn't published any posts yet.
+            </div>
+        {% endif %}
+        
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">&larr; Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

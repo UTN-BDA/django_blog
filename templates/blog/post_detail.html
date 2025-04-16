@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} | Django Blog{% endblock %}
+
+{% block header_title %}{{ post.title }}{% endblock %}
+{% block header_subtitle %}
+    <span class="text-muted">
+        By <a href="{% url 'author_detail' post.author.pk %}">{{ post.author.user.username }}</a> | 
+        {{ post.published_date|date:"F d, Y" }}
+    </span>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <article class="blog-post">
+            {% if post.featured_image %}
+                <div class="mb-4">
+                    <img src="{{ post.featured_image.url }}" class="img-fluid rounded" alt="{{ post.title }}">
+                </div>
+            {% endif %}
+            
+            <div class="post-content">
+                {{ post.content|safe|linebreaks }}
+            </div>
+            
+            <div class="author-bio mt-5">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        {% if post.author.profile_picture %}
+                            <img src="{{ post.author.profile_picture.url }}" class="rounded-circle img-fluid" alt="{{ post.author.user.username }}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-10">
+                        <h4>About {{ post.author.user.get_full_name|default:post.author.user.username }}</h4>
+                        <p>{{ post.author.bio|default:"No bio available." }}</p>
+                        {% if post.author.website %}
+                            <p><a href="{{ post.author.website }}" target="_blank" rel="noopener noreferrer">Website</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'post_list' %}" class="btn btn-outline-primary">&larr; Back to Blog</a>
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}

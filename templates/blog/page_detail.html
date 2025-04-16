@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.title }} | Django Blog{% endblock %}
+
+{% block header_title %}{{ page.title }}{% endblock %}
+{% block header_subtitle %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <article class="page-content">
+            {% if page.featured_image %}
+                <div class="mb-4">
+                    <img src="{{ page.featured_image.url }}" class="img-fluid rounded" alt="{{ page.title }}">
+                </div>
+            {% endif %}
+            
+            <div class="post-content">
+                {{ page.content|safe|linebreaks }}
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">&larr; Back to Home</a>
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}

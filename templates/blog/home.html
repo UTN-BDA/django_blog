@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Django Blog{% endblock %}
+
+{% block header_title %}Welcome to Django Blog{% endblock %}
+{% block header_subtitle %}A simple and elegant blogging platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Featured Posts -->
+    <div class="col-md-8">
+        <h2 class="mb-4">Latest Posts</h2>
+        {% if posts %}
+            {% for post in posts %}
+                <div class="card mb-4">
+                    {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title">{{ post.title }}</h3>
+                        <p class="card-text text-muted">
+                            <small>
+                                By <a href="{% url 'author_detail' post.author.pk %}">{{ post.author.user.username }}</a> | 
+                                {{ post.published_date|date:"F d, Y" }}
+                            </small>
+                        </p>
+                        <p class="card-text">{{ post.excerpt|default:post.content|truncatewords:30 }}</p>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                No posts available yet. Check back soon!
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>About</h4>
+            </div>
+            <div class="card-body">
+                <p>Welcome to Django Blog, a simple and elegant blogging platform built with Django.</p>
+                <p>This blog showcases the power and flexibility of Django for building web applications.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Pages</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for page in pages %}
+                        <li class="list-group-item">
+                            <a href="{% url 'page_detail' page.slug %}">{{ page.title }}</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No pages available</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
